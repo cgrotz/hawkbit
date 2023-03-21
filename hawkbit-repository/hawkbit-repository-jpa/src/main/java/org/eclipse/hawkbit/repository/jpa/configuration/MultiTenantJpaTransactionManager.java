@@ -46,6 +46,13 @@ public class MultiTenantJpaTransactionManager extends JpaTransactionManager {
                     "No EntityManagerHolder provided by TransactionSynchronizationManager");
             final EntityManager em = emHolder.getEntityManager();
             em.setProperty(PersistenceUnitProperties.MULTITENANT_PROPERTY_DEFAULT, currentTenant.toUpperCase());
+        } else {
+            final EntityManagerFactory emFactory = Objects.requireNonNull(getEntityManagerFactory());
+            final EntityManagerHolder emHolder = Objects.requireNonNull(
+                (EntityManagerHolder) TransactionSynchronizationManager.getResource(emFactory),
+                "No EntityManagerHolder provided by TransactionSynchronizationManager");
+            final EntityManager em = emHolder.getEntityManager();
+            em.setProperty(PersistenceUnitProperties.MULTITENANT_PROPERTY_DEFAULT, "DEFAULT");
         }
     }
 }
